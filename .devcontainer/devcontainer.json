@@ -1,0 +1,23 @@
+{
+  "name": "uv-devcontainer-template",
+  "build": {
+    "dockerfile": "Dockerfile.cuda",
+    "context": ".."
+  },
+  "runArgs": ["--gpus", "all"],
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
+  ],
+  "postCreateCommand": "uv sync",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff"
+      ]
+    }
+  }
+}

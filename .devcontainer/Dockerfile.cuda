@@ -1,0 +1,44 @@
+FROM nvidia/cuda:12.8.1-base-ubuntu24.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+ENV PATH="/root/.local/bin/:$PATH"
+
+WORKDIR /workspaces/uv-devcontainer-template
+# Create a non-root user 'vscode' to match VS Code devcontainer convention
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN groupadd -g ${USER_GID} ${USERNAME} || true \
+    && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} || true
+
+# Use user home for caches so files are not created as root in the workspace
+ENV UV_CACHE_DIR=/home/vscode/.cache/uv
+ENV UV_PYTHON_CACHE_DIR=/home/vscode/.cache/uv/python
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_TOOL_BIN_DIR=/usr/local/bin
+
+# Change to other python version you prefer
+# RUN uv python install 3.14
+
+RUN --mount=type=cache,target=/home/vscode/.cache/uv \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv sync --locked --no-install-project --no-dev
+
+ENV PATH="/workspaces/uv-devcontainer-template/.venv/bin:$PATH"
+
+ENTRYPOINT []
+
+# Ensure the workspace is owned by the non-root user so venv and other files are not root-owned
+RUN chown -R ${USERNAME}:${USERNAME} /workspaces/uv-devcontainer-template || true
+
+# Switch to the non-root user for subsequent operations and when running the container
+USER ${USERNAME}
