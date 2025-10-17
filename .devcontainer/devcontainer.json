@@ -9,7 +9,7 @@
   "mounts": [
     "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
   ],
-  "postCreateCommand": "uv sync",
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.cache/uv && uv sync",
   "customizations": {
     "vscode": {
       "extensions": [
