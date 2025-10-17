@@ -6,24 +6,24 @@ ENV TZ=Etc/UTC
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates sudo git
 
+ENV UV_INSTALL_DIR="/home/vscode/.local/bin"
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
-ENV PATH="/root/.local/bin/:$PATH"
+ENV PATH="/home/vscode/.local/bin/:$PATH"
 
 WORKDIR /workspaces/uv-devcontainer-template
 # Create a non-root user 'vscode' to match VS Code devcontainer convention
 ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=1000
-RUN groupadd -g ${USER_GID} ${USERNAME} || true \
-    && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} || true
+ARG USER_UID=1001
+ARG USER_GID=1001
+RUN groupadd -g ${USER_GID} ${USERNAME} \
+    && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} \
+    && echo 'vscode ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Use user home for caches so files are not created as root in the workspace
 ENV UV_CACHE_DIR=/home/vscode/.cache/uv
-ENV UV_PYTHON_CACHE_DIR=/home/vscode/.cache/uv/python
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-ENV UV_TOOL_BIN_DIR=/usr/local/bin
 
 # Change to other python version you prefer
 # RUN uv python install 3.14
