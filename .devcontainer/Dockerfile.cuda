@@ -48,7 +48,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 ENTRYPOINT []
 
 # Ensure proper ownership of workspace and cache directories
-RUN sudo chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME} || true
+RUN sudo chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME}
 
 # Switch to the non-root user for subsequent operations and when running the container
 USER ${USERNAME}
