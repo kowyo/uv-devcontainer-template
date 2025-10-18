@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     unzip \
     build-essential \
-    ninja-build
+    ninja-build \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV UV_INSTALL_DIR="/home/${USERNAME}/.local/bin"
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
@@ -36,10 +37,10 @@ ENV UV_LINK_MODE=copy
 # Change to other python version you prefer
 # RUN uv python install 3.14
 
-RUN --mount=type=cache,target=/home/${USERNAME}/.cache/uv \
+RUN --mount=type=cache,target=${UV_CACHE_DIR} \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync --locked --no-install-project --no-dev
+    uv sync --no-install-project --no-dev
 
 ENV PATH="/workspaces/${PROJECT_NAME}/.venv/bin:$PATH"
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
@@ -47,7 +48,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 ENTRYPOINT []
 
 # Ensure proper ownership of workspace and cache directories
-RUN chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME}/.cache || true
+RUN sudo chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME} || true
 
 # Switch to the non-root user for subsequent operations and when running the container
 USER ${USERNAME}
