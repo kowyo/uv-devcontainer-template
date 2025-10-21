@@ -1,6 +1,6 @@
-# uv devcontainer template (with CUDA support)
+# uv devcontainer template
 
-Currently, there is only cuda version available. Will add more in the future. PRs and issues are welcome!
+Supports CUDA and non-CUDA development environments.
 
 > [!NOTE]
-> Remember to replace `uv-devcontainer-template` with your project name in `.devcontainer/devcontainer.json` and `.devcontainer/Dockerfile.cuda`.
+> Remember to replace `uv-devcontainer-template` with your project name.
