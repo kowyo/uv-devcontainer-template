@@ -21,34 +21,19 @@ ENV UV_INSTALL_DIR="/home/${USERNAME}/.local/bin"
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 ENV PATH="/home/${USERNAME}/.local/bin/:$PATH"
-
-WORKDIR /workspaces/${PROJECT_NAME}
-ARG USER_UID=1001
-ARG USER_GID=1001
-RUN groupadd -g ${USER_GID} ${USERNAME} \
-    && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} \
-    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# Use user home for caches so files are not created as root in the workspace
 ENV UV_CACHE_DIR=/home/${USERNAME}/.cache/uv
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-
-# Change to other python version you prefer
-# RUN uv python install 3.14
-
-RUN --mount=type=cache,target=${UV_CACHE_DIR} \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync --no-install-project --no-dev
-
 ENV PATH="/workspaces/${PROJECT_NAME}/.venv/bin:$PATH"
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 
 ENTRYPOINT []
 
-# Ensure proper ownership of workspace and cache directories
+ARG USER_UID=1001
+ARG USER_GID=1001
+RUN groupadd -g ${USER_GID} ${USERNAME} \
+    && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+WORKDIR /workspaces/${PROJECT_NAME}
 RUN sudo chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME}
-
-# Switch to the non-root user for subsequent operations and when running the container
 USER ${USERNAME}

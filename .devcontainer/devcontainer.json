@@ -9,7 +9,7 @@
   "mounts": [
     "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
   ],
-  "postCreateCommand": "uv sync",
+  "postCreateCommand": "bash ./.devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
       "extensions": [
