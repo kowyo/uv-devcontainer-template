@@ -29,5 +29,4 @@ RUN groupadd -g ${USER_GID} ${USERNAME} \
     && useradd -m -u ${USER_UID} -g ${USER_GID} -s /bin/bash ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 WORKDIR /workspaces/${PROJECT_NAME}
-RUN sudo chown -R ${USERNAME}:${USERNAME} /workspaces/${PROJECT_NAME} /home/${USERNAME}
 USER ${USERNAME}

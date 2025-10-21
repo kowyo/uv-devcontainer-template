@@ -1,10 +1,10 @@
 {
   "name": "uv-devcontainer-template",
   "build": {
-    "dockerfile": "Dockerfile.cuda",
+    "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "runArgs": ["--gpus", "all"],
+  // "runArgs": ["--gpus", "all"],
   "remoteUser": "vscode",
   "mounts": [
     "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
