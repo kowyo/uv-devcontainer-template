@@ -15,11 +15,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
+ENV UV_INSTALL_DIR="/home/${USERNAME}/.local/bin"
 ENV PATH="/home/${USERNAME}/.local/bin/:$PATH"
 ENV UV_CACHE_DIR=/home/${USERNAME}/.cache/uv
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 ENV PATH="/workspaces/${PROJECT_NAME}/.venv/bin:$PATH"
+
+RUN curl -fsSL https://astral.sh/uv/install.sh | sh
 
 ENTRYPOINT []
 
