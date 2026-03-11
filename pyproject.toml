@@ -11,6 +11,7 @@ dev = [
     "commitizen>=4.13.9",
     "prek>=0.3.5",
     "ruff>=0.15.5",
+    "ty>=0.0.21",
 ]
 
 [project.scripts]
