@@ -1,2 +1,2 @@
-def hello() -> str:
-    return "Hello from starter!"
+def main() -> None:
+    print("Hello from starter!")
